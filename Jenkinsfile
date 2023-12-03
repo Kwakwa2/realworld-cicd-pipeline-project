@@ -58,7 +58,7 @@ pipeline {
                 sh """
                 mvn sonar:sonar \
                 -Dsonar.projectKey=Java-WebApp \
-                -Dsonar.host.url=http://10.162.0.16:9000 \
+                -Dsonar.host.url=http://10.188.0.22:9000 \
                 -Dsonar.login=$SONAR_TOKEN
                 """
                 }
@@ -136,4 +136,13 @@ pipeline {
     }
   }
 }
+
+post {
+    always {
+        echo 'Slack Notifications.'
+        slackSend channel: '#festus-jenkin-pipeline', //update and provide your channel name
+        color: COLOR_MAP[currentBuild.currentResult],
+        message: "*${currentBuild.currentResult}:* Job Name '${env.JOB_NAME}' build ${env.BUILD_NUMBER} \n Build Timestamp: ${env.BUILD_TIMESTAMP} \n Project Workspace: ${env.WORKSPACE} \n More info at: ${env.BUILD_URL}"
+    }
+  }
 
